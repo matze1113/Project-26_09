@@ -7,8 +7,18 @@ document.getElementById('login-form').addEventListener('submit', function(event)
 
   // Benutzer hinzufügen
   let user = {
-    email: 'dabeiisalles@web.de',
-    password: '1234'
+    email: 'mathias.popow@docc.techstarter.de',
+    password: '1234',
+
+    email: 'andreas.kort@docc.techstarter.de',
+    password: '1234',
+
+    email: 'bartlomiej.idzinski@docc.techstarter.de',
+    password: '321',
+
+    email: 'ingo.neubert@docc.techstarter.de',
+    password: '321'
+
   };
   users.push(user);
 
