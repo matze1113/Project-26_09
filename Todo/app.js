@@ -5,7 +5,7 @@ const users = [
     { email: 'mathias.popow@docc.techstarter.de', password: '1234' }
   ]; // Array zum Speichern der Benutzer
   
-  const tasks = []; // Array zum Speichern der Aufgaben
+  let tasks = []; // Array zum Speichern der Aufgaben
   
   document.getElementById('login-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -37,6 +37,18 @@ const users = [
     return 0;
   }
   
+  // Laden der Aufgabenliste aus dem Local Storage
+  let savedTasks = localStorage.getItem('tasks');
+  if (savedTasks) {
+    tasks = JSON.parse(savedTasks);
+    // Sortieren der geladenen Aufgabenliste nach Fälligkeitsdatum
+    tasks.sort(compareDueDates);
+    // Aufgabenliste anzeigen
+    tasks.forEach(addTaskToList);
+    // Aktualisiere die Checkboxen basierend auf dem Aufgabenstatus
+    updateCheckboxStatus();
+  }
+  
   // Aufgabe hinzufügen
   document.getElementById('add-task-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -46,21 +58,33 @@ const users = [
     let task = {
       title: title,
       description: description,
-      dueDate: dueDate, // Hinzufügen eines Fälligkeitsdatums im "YYYY-MM-DD"-Format
+      dueDate: dueDate,
       completed: false
     };
-  
     // Aufgabe zur Liste hinzufügen
     tasks.push(task);
   
     // Sortieren der Aufgabenliste nach Fälligkeitsdatum
     tasks.sort(compareDueDates);
   
+    // Speichern der aktualisierten Aufgabenliste im Local Storage
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  
     // Hier kannst du die Aufgabe zur Liste hinzufügen
     // Beispiel: Speichern der Aufgabe in einer Datenbank oder im Local Storage
     addTaskToList(task);
     clearAddTaskForm();
   });
+  
+  // Funktion zum Laden der Aufgabenliste in die Anzeige
+  function loadTasks() {
+    let taskList = document.getElementById('tasks');
+    taskList.innerHTML = ''; // Lösche die aktuelle Anzeige
+  
+    tasks.forEach(function(task) {
+      addTaskToList(task);
+    });
+  }
   
   // Aufgabenliste anzeigen
   function addTaskToList(task) {
@@ -71,15 +95,18 @@ const users = [
       li.classList.add('completed');
     }
     taskList.appendChild(li);
-  
-    // Hier fügen wir die Funktion zur Markierung von Aufgaben hinzu
-    li.querySelector('input[type="checkbox"]').addEventListener('click', function(event) {
-      task.completed = event.target.checked;
-      if (event.target.checked) {
+  // Hier fügen wir die Funktion zur Markierung von Aufgaben hinzu
+    let checkbox = li.querySelector('input[type="checkbox"]');
+    checkbox.addEventListener('click', function(event) {
+      task.completed = checkbox.checked;
+      if (checkbox.checked) {
         li.classList.add('completed');
       } else {
         li.classList.remove('completed');
       }
+  
+      // Speichern der aktualisierten Aufgabenliste im Local Storage
+      localStorage.setItem('tasks', JSON.stringify(tasks));
     });
   }
   
@@ -103,3 +130,16 @@ const users = [
     document.getElementById('task-description').value = '';
     document.getElementById('task-dueDate').value = '';
   }
+  
+  // Aktualisiere den Status der Checkboxen basierend auf dem Aufgabenstatus
+  function updateCheckboxStatus() {
+    tasks.forEach(function(task, index) {
+      let li = document.getElementsByTagName('li')[index];
+      let checkbox = li.querySelector('input[type="checkbox"]');
+      checkbox.checked = task.completed;
+    });
+  }
+  
+  // Rufe loadTasks() auf, um die Aufgaben beim Laden der Seite anzuzeigen
+  loadTasks();
+  
