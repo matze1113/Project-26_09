@@ -19,13 +19,22 @@
       <h2>Aufgabe hinzufügen</h2>
       <input type="text" id="task-title" placeholder="Titel" required>
       <textarea id="task-description" placeholder="Beschreibung"></textarea>
+      <input type="date" id="due-date" required>
+      <select id="status" required>
+        <option value="open">Offen</option>
+        <option value="completed">Abgeschlossen</option>
+      </select>
       <button type="submit">Hinzufügen</button>
     </form>
 
     <div id="task-list">
       <h2>Aufgabenliste</h2>
-      <input type="text" id="search-input" placeholder="Suche nach Aufgaben...">
-      <button id="search-button">Suchen</button> <!-- Added search button -->
+      <select id="sort-by">
+        <option value="due-date">Fälligkeitsdatum</option>
+        <option value="title">Titel</option>
+        <option value="status">Status</option>
+      </select>
+      <button id="sort-button">Suchen</button>
       <ul id="tasks">
         <!-- Aufgaben werden hier hinzugefügt -->
       </ul>
@@ -33,19 +42,6 @@
   </div>
 
   <script src="app.js"></script>
-  <script>
-    document.getElementById("search-button").addEventListener("click", function() {
-      var searchInput = document.getElementById("search-input").value;
-      var tasks = document.getElementById("tasks").getElementsByTagName("li");
-      for (var i = 0; i < tasks.length; i++) {
-        var taskTitle = tasks[i].getElementsByTagName("h3")[0].innerText;
-        if (taskTitle.toLowerCase().includes(searchInput.toLowerCase())) {
-          tasks[i].style.display = "block";
-        } else {
-          tasks[i].style.display = "none";
-        }
-      }
-    });
-  </script>
 </body>
 </html>
+
